@@ -1,12 +1,465 @@
-ICMS
-Diferencial de al�quota
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missa 03/08/2025 - Cânticos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-4 - MAFER
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d4a3e 50%, #1a1a1a 75%, #000000 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
 
-apuramos 01/2025
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-	diferencial de al�quota 01/2025
-		[ n�o apurou ]
-		
-	
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffd700, #ffffff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #c0c0c0;
+            font-weight: 300;
+        }
+
+        .canticos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .cantico-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cantico-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 20px;
+        }
+
+        .cantico-card:hover::before {
+            opacity: 1;
+        }
+
+        .cantico-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .cantico-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #ffd700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cantico-type {
+            font-size: 0.9rem;
+            color: #c0c0c0;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        .add-cantico-section {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 2px dashed rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .add-cantico-section h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .add-form {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .add-form input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 1rem;
+            min-width: 250px;
+        }
+
+        .add-form input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .add-form button {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            color: #000;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            width: 90%;
+            height: 90%;
+            max-width: 1000px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .popup-title {
+            color: #ffd700;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .pdf-viewer {
+            flex: 1;
+            border: none;
+            border-radius: 15px;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .canticos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .add-form {
+                flex-direction: column;
+            }
+            
+            .add-form input {
+                min-width: 100%;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #ffd700;
+            font-size: 1.1rem;
+            margin: 20px 0;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-top: 2px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cânticos da Missa</h1>
+            <p>03 de Agosto de 2025</p>
+        </div>
+
+        <div class="canticos-grid" id="canticosGrid">
+            <!-- Os cânticos serão carregados aqui -->
+        </div>
+
+        <div class="add-cantico-section">
+            <h3>Adicionar Novo Cântico</h3>
+            <div class="add-form">
+                <input type="text" id="newCanticoName" placeholder="Nome do arquivo PDF (ex: Entrada - Novo Cantico.pdf)">
+                <button onclick="addNewCantico()">Verificar e Adicionar</button>
+            </div>
+            <div class="loading" id="loading">Verificando arquivo...</div>
+        </div>
+    </div>
+
+    <!-- Popup para exibir PDF -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <div class="popup-title" id="popupTitle">Cântico</div>
+                <button class="close-btn" onclick="closePopup()">×</button>
+            </div>
+            <iframe class="pdf-viewer" id="pdfViewer" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Lista de cânticos na ordem da missa do tempo comum
+        const canticosOrdem = [
+            { file: "Entrada - Eis-me Aqui, Senhor.pdf", type: "Entrada" },
+            { file: "Ato Penitencial - Pelos Pecados.pdf", type: "Ato Penitencial" },
+            { file: "Gloria - gloria_ao_pai_criador.pdf", type: "Glória" },
+            { file: "Salmo - Salmo 89.pdf", type: "Salmo Responsorial" },
+            { file: "Aclamação - a_minhalma_abrirei.pdf", type: "Aclamação ao Evangelho" },
+            { file: "Ofertório - meu_coracao_eh_para_ti.pdf", type: "Ofertório" },
+            { file: "Santo - santo_santo_e.pdf", type: "Santo" },
+            { file: "Amem - Aaaamem.pdf", type: "Amém" },
+            { file: "Cordeiro - Cordeiro de Deus que tirais.pdf", type: "Cordeiro de Deus" },
+            { file: "Comunhão - este_pranto_em_minhas_maos.pdf", type: "Comunhão" },
+            { file: "Final - Anjos de Deus.pdf", type: "Final" }
+        ];
+
+        // Função para extrair o nome do cântico do nome do arquivo
+        function extractCanticoName(filename) {
+            // Remove a extensão .pdf
+            let name = filename.replace('.pdf', '');
+            // Remove o tipo (parte antes do hífen)
+            let parts = name.split(' - ');
+            if (parts.length > 1) {
+                return parts.slice(1).join(' - ');
+            }
+            return name;
+        }
+
+        // Função para carregar os cânticos
+        function loadCanticos() {
+            const grid = document.getElementById('canticosGrid');
+            grid.innerHTML = '';
+
+            canticosOrdem.forEach(cantico => {
+                const card = document.createElement('div');
+                card.className = 'cantico-card';
+                card.onclick = () => openPDF(cantico.file, extractCanticoName(cantico.file));
+
+                const title = extractCanticoName(cantico.file);
+                
+                card.innerHTML = `
+                    <div class="cantico-title">${title}</div>
+                    <div class="cantico-type">${cantico.type}</div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Função para abrir o PDF no popup
+        function openPDF(filename, title) {
+            const popup = document.getElementById('popupOverlay');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const popupTitle = document.getElementById('popupTitle');
+
+            // Constrói a URL do PDF no GitHub
+            const pdfUrl = `https://raw.githubusercontent.com/iramalho1980/missa_03-08-2025/main/Letras/${encodeURIComponent(filename)}`;
+            
+            popupTitle.textContent = title;
+            pdfViewer.src = pdfUrl;
+            popup.style.display = 'flex';
+        }
+
+        // Função para fechar o popup
+        function closePopup() {
+            const popup = document.getElementById('popupOverlay');
+            const pdfViewer = document.getElementById('pdfViewer');
+            
+            popup.style.display = 'none';
+            pdfViewer.src = '';
+        }
+
+        // Função para adicionar novo cântico
+        async function addNewCantico() {
+            const input = document.getElementById('newCanticoName');
+            const loading = document.getElementById('loading');
+            const filename = input.value.trim();
+
+            if (!filename) {
+                alert('Por favor, digite o nome do arquivo PDF.');
+                return;
+            }
+
+            if (!filename.endsWith('.pdf')) {
+                alert('O arquivo deve ter extensão .pdf');
+                return;
+            }
+
+            loading.style.display = 'block';
+
+            try {
+                // Verifica se o arquivo existe no repositório
+                const checkUrl = `https://api.github.com/repos/iramalho1980/missa_03-08-2025/contents/Letras/${encodeURIComponent(filename)}`;
+                const response = await fetch(checkUrl);
+
+                if (response.ok) {
+                    // Arquivo existe, determina o tipo baseado no nome
+                    let type = "Cântico";
+                    const lowerFilename = filename.toLowerCase();
+                    
+                    if (lowerFilename.includes('entrada')) type = "Entrada";
+                    else if (lowerFilename.includes('ato penitencial')) type = "Ato Penitencial";
+                    else if (lowerFilename.includes('gloria')) type = "Glória";
+                    else if (lowerFilename.includes('salmo')) type = "Salmo Responsorial";
+                    else if (lowerFilename.includes('aclamação')) type = "Aclamação ao Evangelho";
+                    else if (lowerFilename.includes('ofertório')) type = "Ofertório";
+                    else if (lowerFilename.includes('santo')) type = "Santo";
+                    else if (lowerFilename.includes('amem') || lowerFilename.includes('amém')) type = "Amém";
+                    else if (lowerFilename.includes('cordeiro')) type = "Cordeiro de Deus";
+                    else if (lowerFilename.includes('comunhão')) type = "Comunhão";
+                    else if (lowerFilename.includes('final')) type = "Final";
+
+                    // Adiciona à lista
+                    canticosOrdem.push({ file: filename, type: type });
+                    
+                    // Recarrega a grid
+                    loadCanticos();
+                    
+                    // Limpa o input
+                    input.value = '';
+                    
+                    alert(`Cântico "${extractCanticoName(filename)}" adicionado com sucesso!`);
+                } else {
+                    alert('Arquivo não encontrado na pasta Letras do repositório. Verifique se o nome está correto e se o arquivo foi enviado.');
+                }
+            } catch (error) {
+                alert('Erro ao verificar o arquivo. Tente novamente.');
+                console.error('Erro:', error);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Fechar popup ao clicar fora dele
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        // Fechar popup com tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
+
+        // Carregar cânticos ao inicializar a página
+        document.addEventListener('DOMContentLoaded', loadCanticos);
+    </script>
+</body>
+</html>
 
